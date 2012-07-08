@@ -29,7 +29,6 @@
 					$this	= $(self).empty();
 	
 				self.opt = $.extend(true, {}, $.fn.raty.defaults, settings);
-
 				$this.data('settings', self.opt);
 
 				self.opt.number = methods.between(self.opt.number, 0, 20);
@@ -48,7 +47,7 @@
 
 				for (var i = 1; i <= self.opt.number; i++) {
 					$('<img />', {
-						src		: self.opt.path + ((!self.opt.score || self.opt.score < i) ? self.opt.starOff : self.opt.starOn),
+						src		: methods.setSource((!self.opt.score || self.opt.score < i) ? self.opt.starOff : self.opt.starOn),
 						alt		: i,
 						title	: (i <= self.opt.hints.length && self.opt.hints[i - 1] !== null) ? self.opt.hints[i - 1] : i
 					}).appendTo(self);
@@ -76,7 +75,7 @@
 					width	= self.opt.width || (self.opt.number * self.opt.size + self.opt.number * space);
 
 				if (self.opt.cancel) {
-					self.cancel = $('<img />', { src: self.opt.path + self.opt.cancelOff, alt: 'x', title: self.opt.cancelHint, 'class': 'raty-cancel' });
+					self.cancel = $('<img />', { src: methods.setSource(self.opt.cancelOff), alt: 'x', title: self.opt.cancelHint, 'class': 'raty-cancel' });
 
 					if (self.opt.cancelPlace == 'left') {
 						$this.prepend('&#160;').prepend(self.cancel);
@@ -122,9 +121,9 @@
 
 			if (self.opt.cancel) {
 				self.cancel.mouseenter(function() {
-					$(this).attr('src', self.opt.path + self.opt.cancelOn);
+					$(this).attr('src', methods.setSource(self.opt.cancelOn));
 
-					self.stars.attr('src', self.opt.path + self.opt.starOff);
+					self.stars.attr('src', methods.setSource(self.opt.starOff));
 
 					methods.setTarget.call(self, null, true);
 
@@ -132,7 +131,7 @@
 						self.opt.mouseover.call(self, null);
 					}
 				}).mouseleave(function() {
-					$(this).attr('src', self.opt.path + self.opt.cancelOff);
+					$(this).attr('src', methods.setSource(self.opt.cancelOff));
 
 					if (self.opt.mouseover) {
 						self.opt.mouseover.call(self, self.score.val() || null);
@@ -238,7 +237,7 @@
 					}
 
 					if (i <= star.range) {
-						$star.attr('src', self.opt.path + icon);
+						$star.attr('src', methods.setSource(icon));
 					}
 
 					if (i == star.range) {
@@ -251,7 +250,7 @@
 						icon = (i <= score) ? self.opt.starOn : self.opt.starOff;
 					}
 
-					$star.attr('src', self.opt.path + icon);
+					$star.attr('src', methods.setSource(icon));
 				}
 			}
 		}, fixHint: function() {
@@ -321,7 +320,7 @@
 					icon = this.opt.starOff;
 				}
 
-				this.stars.eq(Math.ceil(score) - 1).attr('src', this.opt.path + icon);
+				this.stars.eq(Math.ceil(score) - 1).attr('src', setSource(icon));
 			}															// Full down: [x.00 .. x.25]
 		}, score: function() {
 			return arguments.length ? methods.setScore.apply(this, arguments) : methods.getScore.call(this);
@@ -388,7 +387,7 @@
 			var diff = (score - Math.floor(score)).toFixed(1);
 
 			if (diff > 0 && diff < .6) {
-				this.stars.eq(Math.ceil(score) - 1).attr('src', this.opt.path + this.opt.starHalf);
+				this.stars.eq(Math.ceil(score) - 1).attr('src', setSource(this.starHalf));
 			}
 		}, initialize: function(score) {
 			score = !score ? 0 : methods.between(score, 0, this.opt.number);
@@ -410,6 +409,12 @@
 			$(this).data('readonly', false).css('cursor', 'pointer').removeAttr('title');
 
 			this.score.attr('readonly', 'readonly');
+		}, setSource: function(icon){
+			if ($.fn.raty.defaults.imageCache) {
+			return localStorage[$.fn.raty.defaults.path+icon];
+			} else {
+			return $.fn.raty.defaults.path+icon;
+			}
 		}
 	};
 
@@ -434,6 +439,7 @@
 		halfShow		: true,
 		hints			: ['bad', 'poor', 'regular', 'good', 'gorgeous'],
 		iconRange		: undefined,
+		imageCache		: true,
 		mouseover		: undefined,
 		noRatedMsg		: 'not rated yet',
 		number			: 5,
