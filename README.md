@@ -28,6 +28,7 @@ jQuery Raty is a plugin that generates a customizable star rating.
 	halfShow     : true                                           // Enables half star display.
 	hints        : ['bad', 'poor', 'regular', 'good', 'gorgeous'] // A hint information for default 5 stars.
 	iconRange    : undefined                                      // Object list representing each icon with position and names.
+	imageCache   : true					      // Looks up images in local client Cache before fetching server.
 	mouseover    : undefined                                      // Callback for mouseover actions.
 	noRatedMsg   : 'not rated yet'                                // A hint for no rated elements when it's read-only.
 	number       : 5                                              // Number of star.
