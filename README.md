@@ -4,9 +4,9 @@ jQuery Raty is a plugin that generates a customizable star rating.
 
 ## Version
 
-	@version        2.4.5
-	@since          2010.06.11
-	@author         Washington Botelho
+	@version        2.4.5 --Modified for integration with doomhz / jQuery-Image-Cache
+	@since          2012.09.24
+	@author         Washington Botelho  --CJS
 	@documentation  wbotelhos.com/raty
 	@twitter        twitter.com/wbotelhos
 
@@ -28,7 +28,7 @@ jQuery Raty is a plugin that generates a customizable star rating.
 	halfShow     : true                                           // Enables half star display.
 	hints        : ['bad', 'poor', 'regular', 'good', 'gorgeous'] // A hint information for default 5 stars.
 	iconRange    : undefined                                      // Object list representing each icon with position and names.
-	imageCache   : true					           // Looks up images in local client Cache instead of fetching server.
+	imageCache   : false					      // Looks up images in local client Cache instead of fetching server.
 	mouseover    : undefined                                      // Callback for mouseover actions.
 	noRatedMsg   : 'not rated yet'                                // A hint for no rated elements when it's read-only.
 	number       : 5                                              // Number of star.
