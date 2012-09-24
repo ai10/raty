@@ -45,9 +45,9 @@
 					self.opt.score = methods.between(self.opt.score, 0, self.opt.number);					
 				}
 
-				for (var i = 1; i <= self.opt.number; i++) {
+  				for (var i = 1; i <= self.opt.number; i++) {
 					$('<img />', {
-						src		: methods.setSource((!self.opt.score || self.opt.score < i) ? self.opt.starOff : self.opt.starOn),
+						src		: self.opt.path+((!self.opt.score || self.opt.score < i) ? self.opt.starOff : self.opt.starOn),
 						alt		: i,
 						title	: (i <= self.opt.hints.length && self.opt.hints[i - 1] !== null) ? self.opt.hints[i - 1] : i
 					}).appendTo(self);
@@ -75,7 +75,7 @@
 					width	= self.opt.width || (self.opt.number * self.opt.size + self.opt.number * space);
 
 				if (self.opt.cancel) {
-					self.cancel = $('<img />', { src: methods.setSource(self.opt.cancelOff), alt: 'x', title: self.opt.cancelHint, 'class': 'raty-cancel' });
+					self.cancel = $('<img />', { src: "img/"+self.opt.cancelOff, alt: 'x', title: self.opt.cancelHint, 'class': 'raty-cancel' });
 
 					if (self.opt.cancelPlace == 'left') {
 						$this.prepend('&#160;').prepend(self.cancel);
@@ -121,9 +121,9 @@
 
 			if (self.opt.cancel) {
 				self.cancel.mouseenter(function() {
-					$(this).attr('src', methods.setSource(self.opt.cancelOn));
+					$(this).attr('src', methods.setSource.call(self, self.opt.cancelOn));
 
-					self.stars.attr('src', methods.setSource(self.opt.starOff));
+					self.stars.attr('src', methods.setSource.call(self, self.opt.starOff));
 
 					methods.setTarget.call(self, null, true);
 
@@ -131,7 +131,7 @@
 						self.opt.mouseover.call(self, null);
 					}
 				}).mouseleave(function() {
-					$(this).attr('src', methods.setSource(self.opt.cancelOff));
+					$(this).attr('src', methods.setSource.call(self, self.opt.cancelOff));
 
 					if (self.opt.mouseover) {
 						self.opt.mouseover.call(self, self.score.val() || null);
@@ -237,7 +237,7 @@
 					}
 
 					if (i <= star.range) {
-						$star.attr('src', methods.setSource(icon));
+						$star.attr('src', methods.setSource.call(this, icon));
 					}
 
 					if (i == star.range) {
@@ -250,7 +250,7 @@
 						icon = (i <= score) ? self.opt.starOn : self.opt.starOff;
 					}
 
-					$star.attr('src', methods.setSource(icon));
+					$star.attr('src', methods.setSource.call(this, icon));
 				}
 			}
 		}, fixHint: function() {
@@ -320,7 +320,7 @@
 					icon = this.opt.starOff;
 				}
 
-				this.stars.eq(Math.ceil(score) - 1).attr('src', setSource(icon));
+				this.stars.eq(Math.ceil(score) - 1).attr('src', methods.setSource.call(icon));
 			}															// Full down: [x.00 .. x.25]
 		}, score: function() {
 			return arguments.length ? methods.setScore.apply(this, arguments) : methods.getScore.call(this);
@@ -387,7 +387,7 @@
 			var diff = (score - Math.floor(score)).toFixed(1);
 
 			if (diff > 0 && diff < .6) {
-				this.stars.eq(Math.ceil(score) - 1).attr('src', setSource(this.starHalf));
+				this.stars.eq(Math.ceil(score) - 1).attr('src', methods.setSource.call(this, this.starHalf));
 			}
 		}, initialize: function(score) {
 			score = !score ? 0 : methods.between(score, 0, this.opt.number);
@@ -410,10 +410,14 @@
 
 			this.score.attr('readonly', 'readonly');
 		}, setSource: function(icon){
-			if ($.fn.raty.defaults.imageCache) {
-			return localStorage[$.fn.raty.defaults.path+icon];
+			if (this.opt.imageCache) {
+				if (localStorage[this.opt.path+icon] == 'pending') { 
+					this.opt.path+icon;
+				} else {
+					return localStorage[this.opt.path+icon];
+				}
 			} else {
-			return $.fn.raty.defaults.path+icon;
+			return this.opt.path+icon;
 			}
 		}
 	};
@@ -429,7 +433,7 @@
 	};
 
 	$.fn.raty.defaults = {
-		cancel			: false,
+		cancel			: true,
 		cancelHint		: 'cancel this rating!',
 		cancelOff		: 'cancel-off.png',
 		cancelOn		: 'cancel-on.png',
@@ -437,12 +441,12 @@
 		click			: undefined,
 		half			: false,
 		halfShow		: true,
-		hints			: ['bad', 'poor', 'regular', 'good', 'gorgeous'],
+		hints			: ['1', '2', '3', '4', '5'],
 		iconRange		: undefined,
-		imageCache		: true,
+		imageCache		: false,
 		mouseover		: undefined,
 		noRatedMsg		: 'not rated yet',
-		number			: 5,
+		number			: 7,
 		path			: 'img/',
 		precision		: false,
 		round			: { down: .25, full: .6, up: .76 },
@@ -453,8 +457,8 @@
 		size			: 16,
 		space			: true,
 		starHalf		: 'star-half.png',
-		starOff			: 'star-off.png',
-		starOn			: 'star-on.png',
+		starOff			: 'check_less.png',
+		starOn			: 'check_mark.png',
 		target			: undefined,
 		targetFormat	: '{score}',
 		targetKeep		: false,
