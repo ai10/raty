@@ -47,7 +47,7 @@
 
   				for (var i = 1; i <= self.opt.number; i++) {
 					$('<img />', {
-						src		: self.opt.path+((!self.opt.score || self.opt.score < i) ? self.opt.starOff : self.opt.starOn),
+						src		: methods.setSource.call(self, ((!self.opt.score || self.opt.score < i) ? self.opt.starOff : self.opt.starOn)),
 						alt		: i,
 						title	: (i <= self.opt.hints.length && self.opt.hints[i - 1] !== null) ? self.opt.hints[i - 1] : i
 					}).appendTo(self);
@@ -75,7 +75,7 @@
 					width	= self.opt.width || (self.opt.number * self.opt.size + self.opt.number * space);
 
 				if (self.opt.cancel) {
-					self.cancel = $('<img />', { src: "img/"+self.opt.cancelOff, alt: 'x', title: self.opt.cancelHint, 'class': 'raty-cancel' });
+					self.cancel = $('<img />', { src: methods.setSource.call(self, self.opt.cancelOff), alt: 'x', title: self.opt.cancelHint, 'class': 'raty-cancel' });
 
 					if (self.opt.cancelPlace == 'left') {
 						$this.prepend('&#160;').prepend(self.cancel);
@@ -411,8 +411,8 @@
 			this.score.attr('readonly', 'readonly');
 		}, setSource: function(icon){
 			if (this.opt.imageCache) {
-				if (localStorage[this.opt.path+icon] == 'pending') { 
-					this.opt.path+icon;
+				if (localStorage[this.opt.path+icon] == 'pending' || localStorage[this.opt.path+icon] == undefined) { 
+					return this.opt.path+icon;
 				} else {
 					return localStorage[this.opt.path+icon];
 				}
@@ -447,7 +447,7 @@
 		mouseover		: undefined,
 		noRatedMsg		: 'not rated yet',
 		number			: 7,
-		path			: 'img/',
+		path			: 'http://www.binpub.com/img/',
 		precision		: false,
 		round			: { down: .25, full: .6, up: .76 },
 		readOnly		: false,
